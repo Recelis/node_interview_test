@@ -10,9 +10,7 @@ let csvArr = [];
 let checkFirstRow = true;
 // what does pipe do? what does on do?
 readStream.pipe(parse({delimiter:','})).on('data', (csvrow)=>{ 
-    // csvArr.push(csvrow);
-    if (checkFirstRow) {
-        console.log("skipping first row");
+    if (checkFirstRow) { // skipping header
         checkFirstRow = false;
     }
     else{ // only push csvrows[1,3,& 4]
@@ -24,6 +22,8 @@ readStream.pipe(parse({delimiter:','})).on('data', (csvrow)=>{
     writeStream.end();
     let meanHeight = getMeanHeight();
     console.log("the mean of the top " + csvArr.length + " buildings in the world is " + meanHeight + "m.");
+    let countryDetails = getCountryWithMostTallBuildings();
+    console.log("the country with the most skyscrapers in the tallest list is " + countryDetails[0] + " at " + countryDetails[1] + " skyscrapers.");
 });
 
 // how do these anonymous functions work?
@@ -47,3 +47,37 @@ const getMeanHeight = () =>{
     });
     return (totalHeight/csvArr.length).toFixed(2);
 };
+
+const getCountryWithMostTallBuildings = ()=>{
+    let countryObj = {};
+    // *pseudo code*
+    // loop through countries
+    // search country in Obj
+    // if found + 1 to Obj
+    // else if not found in Obj, create new and put 0
+    csvArr.forEach(row=>{
+        let country = row[1].trim(); // remove spaces at beginning and end of string
+        if (countryObj.hasOwnProperty(country) === true) {
+            countryObj[country] +=1;
+        }
+        else countryObj[country] = 1;
+    });
+    // max number of skyscrapers
+    // *pseudo code*
+        // set largestNum = 0;
+        // set largestNumCountry = ""
+        // get keys for looping
+        // loop through each key
+        // if country num is larger than largestNum
+        // reset largestNum and largestNumCountry
+    let largestNum = 0;
+    let largestNumCountry = "";
+    let countryKeys = Object.keys(countryObj);
+    countryKeys.forEach((countryk)=>{
+        if (countryObj[countryk] > largestNum){
+            largestNum = countryObj[countryk];
+            largestNumCountry = countryk;
+        }
+    });
+    return [largestNumCountry, largestNum];
+}

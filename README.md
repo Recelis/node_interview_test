@@ -8,3 +8,5 @@ Instructions
 3. export this extract into a new csv file to be saved
 4. get mean height building
 5. get country with most tallest buildings 
+
+run {node index.js} from terminal
